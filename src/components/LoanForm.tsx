@@ -8,10 +8,24 @@ interface LoanFormProps {
 export function LoanForm({ values, onChange }: LoanFormProps) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    
+    // Special handling for different input types
+    const newValue = name === 'name' 
+      ? value 
+      : name === 'startDate' 
+        ? value // Keep the ISO format for the input value
+        : Number(value);
+
     onChange({
       ...values,
-      [name]: name === 'name' ? value : Number(value)
+      [name]: newValue
     });
+  };
+
+  // Format the date for display (if needed)
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-GB'); // This will format as DD/MM/YYYY
   };
 
   return (
@@ -73,6 +87,9 @@ export function LoanForm({ values, onChange }: LoanFormProps) {
             onChange={handleChange}
             className="w-full px-3 py-2 rounded text-black"
           />
+          <p className="text-sm mt-1 opacity-80">
+            Selected: {formatDate(values.startDate)}
+          </p>
         </div>
       </div>
     </div>

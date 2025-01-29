@@ -1,6 +1,7 @@
 import { Download } from 'lucide-react';
 import html2pdf from 'html2pdf.js';
 import { Logo } from './Logo';
+import { useState } from 'react';
 
 interface LoanApprovalProps {
   name: string;
@@ -9,19 +10,37 @@ interface LoanApprovalProps {
 }
 
 export function LoanApproval({ name, startDate, onPrevious }: LoanApprovalProps) {
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+
   const handleDownloadPDF = async () => {
     const element = document.getElementById('print-area');
     if (!element) return;
 
-    const pdfOptions = {
-      margin: [10, 10, 10, 10],
-      filename: `${name || 'Loan_Approval'}.pdf`,
-      image: { type: 'jpeg', quality: 1 },
-      html2canvas: { scale: 4 },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
+    try {
+      setIsGeneratingPDF(true);
+      
+      const pdfOptions = {
+        margin: 0,
+        filename: `${name || 'Loan_Approval'}.pdf`,
+        image: { type: 'jpeg', quality: 1 },
+        html2canvas: { 
+          scale: 2,
+          useCORS: true,
+          logging: false
+        },
+        jsPDF: { 
+          unit: 'mm', 
+          format: 'a4', 
+          orientation: 'portrait'
+        }
+      };
 
-    await html2pdf().set(pdfOptions).from(element).save();
+      await html2pdf().set(pdfOptions).from(element).save();
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+    } finally {
+      setIsGeneratingPDF(false);
+    }
   };
 
   const formatDate = (dateString: string) => {
@@ -35,82 +54,84 @@ export function LoanApproval({ name, startDate, onPrevious }: LoanApprovalProps)
   return (
     <div className="min-h-screen bg-gray-100 p-4 md:p-8">
       <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg" id="print-area">
-        <div className="p-6">
+        <div className="p-4">
           {/* Header */}
-          <div className="flex justify-between items-center mb-8">
+          <div className="flex justify-between items-center mb-4">
             <Logo />
-            <div className="flex gap-4">
-              <button
-                onClick={handleDownloadPDF}
-                className="flex items-center gap-2 px-4 py-2 bg-red-gradient text-white rounded-lg hover:opacity-90 transition-opacity"
-              >
-                <Download size={20} />
-                Print
-              </button>
-              <button
-                onClick={onPrevious}
-                className="px-4 py-2 bg-red-gradient text-white rounded-lg hover:opacity-90 transition-opacity"
-              >
-                Previous
-              </button>
-            </div>
+            {!isGeneratingPDF && (
+              <div className="flex gap-4">
+                <button
+                  onClick={handleDownloadPDF}
+                  className="flex items-center gap-2 px-4 py-2 bg-red-gradient text-white rounded-lg hover:opacity-90 transition-opacity"
+                >
+                  <Download size={20} />
+                  Print
+                </button>
+                <button
+                  onClick={onPrevious}
+                  className="px-4 py-2 bg-red-gradient text-white rounded-lg hover:opacity-90 transition-opacity"
+                >
+                  Previous
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Approval Content */}
-          <div className="space-y-6">
-            <div className="text-right space-y-1">
-              <p>{currentDate}</p>
-              <p>{idNumber}</p>
+          <div className="space-y-3">
+            <div className="text-right">
+              <p className="text-sm">{currentDate}</p>
+              <p className="text-sm">{idNumber}</p>
             </div>
 
-            <div className="space-y-4">
-              <p>Dear Sir / Madam,</p>
-              <p className="font-semibold">{name}</p>
+            <div className="space-y-2">
+              <p className="text-sm">Dear Sir / Madam,</p>
+              <p className="font-semibold text-sm">{name}</p>
             </div>
 
             <div>
-              <p className="font-semibold">Certificate of Approved Loan No. {idNumber}</p>
-              <p className="mt-2">
+              <p className="font-semibold text-sm">Certificate of Approved Loan No. {idNumber}</p>
+              <p className="mt-1 text-sm">
                 We acknowledge the receipt of minimal documentation from your end, and we sincerely
                 appreciate your choice of Dhani Finance as your financial partner. With reference to
                 your recent loan application, we are pleased to extend to you the following loan
                 offer, subject to the specified terms and conditions, with the first Equated Monthly
                 Installment (EMI) scheduled for:
               </p>
-              <p className="mt-2 font-semibold">{formatDate(startDate)}</p>
+              <p className="mt-1 font-semibold text-sm">{formatDate(startDate)}</p>
             </div>
 
-            <div className="bg-gray-50 p-6 rounded-lg space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <p className="font-semibold">Approved Loan Amount</p>
-                  <p>₹ 500,000</p>
+                  <p className="font-semibold text-sm">Approved Loan Amount</p>
+                  <p className="text-sm">₹ 500,000</p>
                 </div>
                 <div>
-                  <p className="font-semibold">Interest Rate</p>
-                  <p>4.00%</p>
+                  <p className="font-semibold text-sm">Interest Rate</p>
+                  <p className="text-sm">4.00%</p>
                 </div>
                 <div>
-                  <p className="font-semibold">Loan Term</p>
-                  <p>60 Months</p>
+                  <p className="font-semibold text-sm">Loan Term</p>
+                  <p className="text-sm">60 Months</p>
                 </div>
                 <div>
-                  <p className="font-semibold">Monthly Payment (EMI)</p>
-                  <p>₹ 9,208</p>
+                  <p className="font-semibold text-sm">Monthly Payment (EMI)</p>
+                  <p className="text-sm">₹ 9,208</p>
                 </div>
                 <div>
-                  <p className="font-semibold">Total Interest Payable</p>
-                  <p>₹ 52,496</p>
+                  <p className="font-semibold text-sm">Total Interest Payable</p>
+                  <p className="text-sm">₹ 52,496</p>
                 </div>
                 <div>
-                  <p className="font-semibold">Document Service Charge</p>
-                  <p>₹ 1,380</p>
+                  <p className="font-semibold text-sm">Document Service Charge</p>
+                  <p className="text-sm">₹ 1,380</p>
                 </div>
               </div>
             </div>
 
-            <div className="space-y-4">
-              <p>
+            <div className="space-y-2">
+              <p className="text-sm">
                 Please note that this loan offer is contingent upon your acceptance of the
                 aforementioned terms and conditions. Should you wish to proceed with this loan,
                 kindly respond to this communication at your earliest convenience. We look forward
@@ -119,43 +140,35 @@ export function LoanApproval({ name, startDate, onPrevious }: LoanApprovalProps)
                 hesitate to reach out to our dedicated customer service team.
               </p>
 
-              <p>
-                Thank you once again for
-                <br />
-                choosing Dhani Finance as your
-                <br />
-                trusted financial institution.
+              <p className="text-sm">
+                Thank you once again for choosing Dhani Finance as your trusted financial institution.
               </p>
             </div>
 
-            <div className="flex justify-between items-end mt-8">
+            <div className="flex justify-between items-end mt-4">
               <img
                 src="https://i.imgur.com/approved-stamp.png"
                 alt="Approved"
-                className="h-24 object-contain"
+                className="h-16 object-contain"
               />
               <img
                 src="https://i.imgur.com/company-seal.png"
                 alt="Company Seal"
-                className="h-24 object-contain"
+                className="h-16 object-contain"
               />
               <div className="text-center">
                 <img
                   src="https://i.imgur.com/signature.png"
                   alt="Signature"
-                  className="h-16 object-contain mx-auto"
+                  className="h-12 object-contain mx-auto"
                 />
-                <p className="text-sm italic mt-2">
-                  This is a system generated
-                  <br />
-                  letter and hence does not
-                  <br />
-                  require any signature.
+                <p className="text-xs italic mt-1">
+                  This is a system generated letter and hence does not require any signature.
                 </p>
               </div>
             </div>
 
-            <div className="mt-8 pt-8 border-t text-sm text-gray-600">
+            <div className="mt-4 pt-4 border-t text-xs text-gray-600">
               <p className="font-semibold">Corporate Offices:</p>
               <p>
                 One International Centre (Formerly IFC), Senapati Bapat Marg, Elphinstone Road,
