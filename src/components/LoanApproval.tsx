@@ -176,18 +176,18 @@ export function LoanApproval({ name, startDate, onPrevious }: LoanApprovalProps)
 
             <div className="flex justify-between items-end mt-10 md:mt-20 mb-10 md:mb-20">
               <img
-                src="https://i.imgur.com/approved-stamp.png"
+                src="https://i.imgur.com/Kk5HlUq.png"
                 alt="Approved"
                 className="h-24 md:h-40 object-contain"
               />
               <img
-                src="https://i.imgur.com/company-seal.png"
+                src="https://i.imgur.com/JHIZ2gv.png"
                 alt="Company Seal"
                 className="h-24 md:h-40 object-contain"
               />
               <div className="text-center">
                 <img
-                  src="https://i.imgur.com/signature.png"
+                  src="https://i.imgur.com/L3hC0VP.png"
                   alt="Signature"
                   className="h-20 md:h-36 object-contain mx-auto"
                 />

@@ -1,0 +1,39 @@
+.logo-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.logo-image {
+  max-width: 600px;
+  height: auto;
+}
+
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+@media print {
+  .button-container {
+    display: none !important;
+  }
+  
+  .container {
+    width: 1024px !important;  /* Force desktop width */
+    max-width: none !important;
+    margin: 0 auto;
+  }
+  
+  /* Ensure all images and content render at full desktop size */
+  .logo-image {
+    max-width: 600px !important;
+  }
+  
+  img {
+    max-width: 100% !important;
+  }
+} 
